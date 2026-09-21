@@ -1,7 +1,11 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { colors, spacing, fontSizes } from '../theme';
 
-export default function StatusBadge({ label }) {
+type StatusBadgeProps = {
+  label: string;
+};
+
+export default function StatusBadge({ label }: StatusBadgeProps) {
   return (
     <View style={styles.badge}>
       <View style={styles.dot} />

@@ -4,4 +4,6 @@ export const colors = {
   accent: '#34D399',
   white: '#FFFFFF',
   textLight: '#DBEAFE',
-};
+} as const;
+
+export type ColorName = keyof typeof colors;
