@@ -43,11 +43,25 @@ npx expo start
 
 Luego escanear el código QR con Expo Go, o presionar `a` (Android) / `i` (iOS) en la terminal para abrir el emulador.
 
-Para verificar los tipos:
+## Scripts disponibles
 
-```bash
-npm run typecheck
-```
+| Comando                | Descripción                                       |
+| ---------------------- | ------------------------------------------------- |
+| `npm start`            | Inicia el servidor de desarrollo de Expo          |
+| `npm run lint`         | Analiza el código con ESLint                      |
+| `npm run lint:fix`     | Corrige automáticamente los problemas de ESLint   |
+| `npm run format`       | Formatea el código con Prettier                   |
+| `npm run format:check` | Verifica el formato sin modificar archivos        |
+| `npm run typecheck`    | Verifica los tipos de TypeScript                  |
+| `npm run validate`     | Ejecuta typecheck, lint y verificación de formato |
+
+## Buenas prácticas y calidad de código
+
+- **TypeScript** en modo estricto.
+- **ESLint** con la configuración oficial de Expo (`eslint-config-expo`).
+- **Prettier** para mantener un formato de código uniforme.
+- **EditorConfig** para unificar la configuración del editor.
+- **Husky + lint-staged**: antes de cada commit se ejecutan ESLint y Prettier sobre los archivos modificados.
 
 ## Próximos pasos
 
