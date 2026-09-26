@@ -2,13 +2,16 @@
 
 Aplicación mobile de gestión de tareas desarrollada con React Native, Expo (Managed Workflow) y TypeScript.
 
-Este repositorio corresponde al **Checkpoint 1: Estructura Base**, donde se inicializa el proyecto, se define la arquitectura de carpetas y se configura una pantalla de bienvenida.
+## Checkpoints
+
+- **Checkpoint 1 – Estructura base:** inicialización del proyecto con Expo, TypeScript y herramientas de calidad de código.
+- **Checkpoint 2 – Componentes y estilos:** arquitectura de carpetas en `src/`, pantallas `HomeScreen` y `ProfileScreen`, componente reutilizable `ProfileCard` y constantes de diseño centralizadas.
 
 ## Estructura del proyecto
 
 ```
 taskflow-app/
-├── App.tsx               # Punto de entrada de la app
+├── App.tsx               # Punto de entrada: renderiza ProfileScreen
 ├── index.ts
 ├── app.json              # Configuración de Expo
 ├── tsconfig.json         # Configuración de TypeScript
@@ -18,14 +21,35 @@ taskflow-app/
     │   ├── fonts/
     │   └── images/
     ├── components/       # Componentes reutilizables de UI
+    │   ├── ProfileCard.tsx
     │   └── StatusBadge.tsx
+    ├── constants/        # Constantes de diseño
+    │   ├── colors.ts     # Paleta de colores
+    │   └── theme.ts      # Espaciados, tamaños de fuente y radios
     ├── screens/          # Pantallas principales
-    │   └── WelcomeScreen.tsx
-    ├── services/         # Servicios externos (Firebase, APIs)
-    └── theme/            # Colores y estilos globales
-        ├── colors.ts
-        └── index.ts
+    │   ├── HomeScreen.tsx
+    │   └── ProfileScreen.tsx
+    └── services/         # Servicios externos (Firebase, APIs)
 ```
+
+## Componente `ProfileCard`
+
+Tarjeta de perfil reutilizable. No contiene datos internos: todo lo recibe por props.
+
+| Prop    | Tipo     | Descripción                |
+| ------- | -------- | -------------------------- |
+| `name`  | `string` | Nombre del usuario         |
+| `role`  | `string` | Rol o puesto               |
+| `image` | `string` | URL de la imagen de perfil |
+
+```tsx
+<ProfileCard name="Madez" role="Desarrollador Mobile" image="https://i.pravatar.cc/300?img=12" />
+```
+
+- `ProfileScreen` la usa con los datos del usuario actual.
+- `HomeScreen` la reutiliza con distintos datos para listar al equipo.
+
+Los estilos se definen con `StyleSheet.create` y toman colores y espaciados de `src/constants/`.
 
 ## Requisitos
 
@@ -65,8 +89,7 @@ Luego escanear el código QR con Expo Go, o presionar `a` (Android) / `i` (iOS) 
 
 ## Próximos pasos
 
-- Pantallas de lista y detalle de tareas
-- Formularios y listas dinámicas
-- Navegación
+- Formularios para cargar tareas
+- Navegación entre `HomeScreen` y `ProfileScreen`
 - Estado global
-- Integración con Firebase
+- Datos del usuario desde Firebase / Firestore

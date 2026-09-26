@@ -1,18 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View } from 'react-native';
-import WelcomeScreen from './src/screens/WelcomeScreen';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import ProfileScreen from './src/screens/ProfileScreen';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <WelcomeScreen />
+    <SafeAreaProvider>
+      <ProfileScreen />
       <StatusBar style="light" />
-    </View>
+    </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
