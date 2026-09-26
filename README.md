@@ -51,6 +51,12 @@ Tarjeta de perfil reutilizable. No contiene datos internos: todo lo recibe por p
 
 Los estilos se definen con `StyleSheet.create` y toman colores y espaciados de `src/constants/`.
 
+## Ejecución en Expo Go
+
+`ProfileScreen` corriendo en un dispositivo Android con Expo Go:
+
+<img src="docs/profile-screen-expo-go.png" alt="ProfileScreen en Expo Go" width="280" />
+
 ## Requisitos
 
 - Node.js (LTS)
