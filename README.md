@@ -11,7 +11,7 @@ Aplicación mobile de gestión de tareas desarrollada con React Native, Expo (Ma
 
 ```
 taskflow-app/
-├── App.tsx               # Punto de entrada: renderiza ProfileScreen
+├── App.tsx               # Punto de entrada: monta el navegador de la app
 ├── index.ts
 ├── app.json              # Configuración de Expo
 ├── tsconfig.json         # Configuración de TypeScript
@@ -22,19 +22,46 @@ taskflow-app/
     │   └── images/
     ├── components/       # Componentes reutilizables de UI
     │   ├── ProfileCard.tsx
+    │   ├── ScreenHeader.tsx
+    │   ├── ScreenLayout.tsx
     │   └── StatusBadge.tsx
     ├── constants/        # Constantes de diseño
     │   ├── colors.ts     # Paleta de colores
     │   └── theme.ts      # Espaciados, tamaños de fuente y radios
+    ├── navigation/       # Configuración de navegación
+    │   └── AppNavigator.tsx
     ├── screens/          # Pantallas principales
     │   ├── HomeScreen.tsx
     │   └── ProfileScreen.tsx
-    └── services/         # Servicios externos (Firebase, APIs)
+    ├── services/         # Fuente de datos de usuario (hoy en memoria, a futuro un backend)
+    │   └── userService.ts
+    └── types/            # Tipos compartidos del dominio
+        └── user.ts
 ```
+
+## Navegación
+
+La app usa un navegador de tabs inferior (`@react-navigation/bottom-tabs`)
+definido en `src/navigation/AppNavigator.tsx`, montado desde `App.tsx` dentro
+de `NavigationContainer`. Tiene dos tabs:
+
+- **Tareas** (`HomeScreen`)
+- **Perfil** (`ProfileScreen`)
+
+Cada pantalla dibuja su propio encabezado con `ScreenLayout`, así que el
+encabezado nativo del navegador está deshabilitado (`headerShown: false`).
+
+## Componentes compartidos
+
+`ScreenLayout` y `ScreenHeader` (en `src/components/`) concentran la estructura
+común de pantalla: `SafeAreaView`, encabezado con título/subtítulo y el
+`ScrollView` de contenido. Los tokens de diseño (colores, espaciados,
+tamaños de fuente, radios) viven en `src/constants/`.
 
 ## Componente `ProfileCard`
 
-Tarjeta de perfil reutilizable. No contiene datos internos: todo lo recibe por props.
+Tarjeta de perfil reutilizable. No contiene datos internos: todo lo recibe por
+props, derivadas del tipo compartido `User` (`src/types/user.ts`).
 
 | Prop    | Tipo     | Descripción                |
 | ------- | -------- | -------------------------- |
@@ -96,6 +123,5 @@ Luego escanear el código QR con Expo Go, o presionar `a` (Android) / `i` (iOS) 
 ## Próximos pasos
 
 - Formularios para cargar tareas
-- Navegación entre `HomeScreen` y `ProfileScreen`
 - Estado global
 - Datos del usuario desde Firebase / Firestore
