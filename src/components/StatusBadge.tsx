@@ -5,6 +5,8 @@ type StatusBadgeProps = {
   label: string;
 };
 
+const DOT_SIZE = 10;
+
 export default function StatusBadge({ label }: StatusBadgeProps) {
   return (
     <View style={styles.badge}>
@@ -19,21 +21,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-start',
-    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    backgroundColor: colors.overlay,
     paddingVertical: spacing.xs,
     paddingHorizontal: spacing.md,
     borderRadius: radius.full,
     marginTop: spacing.md,
   },
   dot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
+    width: DOT_SIZE,
+    height: DOT_SIZE,
+    borderRadius: DOT_SIZE / 2,
     backgroundColor: colors.secondary,
     marginRight: spacing.sm,
   },
   label: {
-    color: colors.white,
+    color: colors.textInverse,
     fontSize: fontSizes.sm,
     fontWeight: '600',
   },

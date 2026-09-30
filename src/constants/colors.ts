@@ -6,9 +6,10 @@ export const colors = {
   surface: '#FFFFFF',
   text: '#0F172A',
   textMuted: '#64748B',
-  textLight: '#DBEAFE',
+  textInverse: '#FFFFFF',
+  textInverseMuted: '#DBEAFE',
   border: '#E2E8F0',
-  white: '#FFFFFF',
+  overlay: 'rgba(255, 255, 255, 0.12)',
   shadow: '#000000',
 } as const;
 
