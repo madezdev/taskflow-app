@@ -1,6 +1,5 @@
 import type { User } from '../types/user';
 
-// In-memory source for the current user and the team; a real backend will replace this.
 const currentUser: User = {
   id: '1',
   name: 'Madez',
@@ -24,10 +23,13 @@ const team: User[] = [
   },
 ];
 
-export function getCurrentUser(): User {
+// The returned values are read-only on purpose: `currentUser` is the same object
+// stored as the first entry of `team`, so handing out a mutable reference would let
+// one caller change what every other caller sees.
+export function getCurrentUser(): Readonly<User> {
   return currentUser;
 }
 
-export function getTeam(): User[] {
+export function getTeam(): readonly User[] {
   return team;
 }
