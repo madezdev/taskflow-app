@@ -23,9 +23,6 @@ const team: User[] = [
   },
 ];
 
-// The returned values are read-only on purpose: `currentUser` is the same object
-// stored as the first entry of `team`, so handing out a mutable reference would let
-// one caller change what every other caller sees.
 export function getCurrentUser(): Readonly<User> {
   return currentUser;
 }
