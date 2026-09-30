@@ -1,11 +1,14 @@
+import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import ProfileScreen from './src/screens/ProfileScreen';
+import AppNavigator from './src/navigation/AppNavigator';
 
 export default function App() {
   return (
     <SafeAreaProvider>
-      <ProfileScreen />
+      <NavigationContainer>
+        <AppNavigator />
+      </NavigationContainer>
       <StatusBar style="light" />
     </SafeAreaProvider>
   );

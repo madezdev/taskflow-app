@@ -3,3 +3,5 @@ node_modules
 dist
 web-build
 package-lock.json
+.atl
+odd

@@ -1,11 +1,8 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { colors, fontSizes, radius, spacing } from '../constants/theme';
+import type { User } from '../types/user';
 
-type ProfileCardProps = {
-  name: string;
-  role: string;
-  image: string;
-};
+type ProfileCardProps = Pick<User, 'name' | 'role' | 'image'>;
 
 const AVATAR_SIZE = 64;
 
