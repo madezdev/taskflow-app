@@ -11,6 +11,7 @@ export const colors = {
   border: '#E2E8F0',
   overlay: 'rgba(255, 255, 255, 0.12)',
   shadow: '#000000',
+  danger: '#DC2626',
 } as const;
 
 export type ColorName = keyof typeof colors;
