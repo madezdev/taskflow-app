@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors, spacing } from '../constants/theme';
 import ScreenHeader from './ScreenHeader';
@@ -22,7 +22,18 @@ export default function ScreenLayout({
       <ScreenHeader title={title} subtitle={subtitle}>
         {headerAccessory}
       </ScreenHeader>
-      <ScrollView contentContainerStyle={styles.content}>{children}</ScrollView>
+      <KeyboardAvoidingView
+        style={styles.keyboardAvoider}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <ScrollView
+          contentContainerStyle={styles.content}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
+        >
+          {children}
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -31,6 +42,9 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: colors.primary,
+  },
+  keyboardAvoider: {
+    flex: 1,
   },
   content: {
     flexGrow: 1,
