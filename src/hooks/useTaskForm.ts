@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { DEFAULT_TASK_CATEGORY } from '../constants/taskCategories';
 import type { Task, TaskCategory, TaskFormErrors, TaskFormField } from '../types/task';
 import { validateTaskForm } from '../utils/taskValidation';
@@ -15,6 +15,7 @@ export function useTaskForm() {
   const [touched, setTouched] = useState(INITIAL_TOUCHED);
   const [submitAttempted, setSubmitAttempted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const isSubmittingRef = useRef(false);
 
   const allErrors = validateTaskForm({ title, description, category });
 
@@ -36,7 +37,8 @@ export function useTaskForm() {
 
   function submit(): Task | null {
     // Evita registrar la misma tarea dos veces si el usuario toca "Guardar" repetidamente.
-    if (isSubmitting) return null;
+    // El ref se lee al instante; el estado solo sirve para deshabilitar el botón en pantalla.
+    if (isSubmittingRef.current) return null;
 
     setSubmitAttempted(true);
 
@@ -44,6 +46,7 @@ export function useTaskForm() {
       return null;
     }
 
+    isSubmittingRef.current = true;
     setIsSubmitting(true);
     return {
       title: title.trim(),
@@ -59,6 +62,7 @@ export function useTaskForm() {
     setCategory(DEFAULT_TASK_CATEGORY);
     setTouched(INITIAL_TOUCHED);
     setSubmitAttempted(false);
+    isSubmittingRef.current = false;
     setIsSubmitting(false);
   }
 
