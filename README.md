@@ -21,31 +21,31 @@ taskflow-app/
     ├── assets/           # Imágenes y fuentes locales
     │   ├── fonts/
     │   └── images/
-    ├── components/       # Componentes reutilizables de UI
+    ├── components/           # Componentes reutilizables de UI
     │   ├── CategorySelector.tsx
     │   ├── FormField.tsx
     │   ├── ProfileCard.tsx
     │   ├── ScreenHeader.tsx
     │   ├── ScreenLayout.tsx
     │   └── StatusBadge.tsx
-    ├── constants/        # Constantes de diseño
-    │   ├── colors.ts     # Paleta de colores
+    ├── constants/            # Constantes de diseño y de dominio
+    │   ├── colors.ts         # Paleta de colores
     │   ├── taskCategories.ts # Categorías de tarea y categoría por defecto
-    │   └── theme.ts      # Espaciados, tamaños de fuente y radios
-    ├── hooks/            # Hooks personalizados
-    │   └── useTaskForm.ts # Estado, errores y envío del formulario de tareas
-    ├── navigation/       # Configuración de navegación
+    │   └── theme.ts          # Espaciados, tamaños de fuente y radios
+    ├── hooks/                # Hooks personalizados
+    │   └── useTaskForm.ts    # Estado, errores y envío del formulario de tareas
+    ├── navigation/           # Configuración de navegación
     │   └── AppNavigator.tsx
-    ├── screens/          # Pantallas principales
+    ├── screens/              # Pantallas principales
     │   ├── AddTaskScreen.tsx
     │   ├── HomeScreen.tsx
     │   └── ProfileScreen.tsx
-    ├── services/         # Fuente de datos de usuario (hoy en memoria, a futuro un backend)
+    ├── services/             # Fuente de datos de usuario (hoy en memoria, a futuro un backend)
     │   └── userService.ts
-    ├── types/            # Tipos compartidos del dominio
+    ├── types/                # Tipos compartidos del dominio
     │   ├── task.ts
     │   └── user.ts
-    └── utils/            # Funciones puras
+    └── utils/                # Funciones puras
         └── taskValidation.ts # Validación del formulario de tareas
 ```
 
@@ -70,7 +70,8 @@ El estado vive en el hook `useTaskForm` (`src/hooks/useTaskForm.ts`).
 - **Inputs controlados:** cada campo recibe `value` y `onChangeText`.
 - **Validaciones** (`src/utils/taskValidation.ts`): el título es obligatorio y
   debe tener al menos 5 caracteres; la descripción es obligatoria y debe tener
-  al menos 10. La categoría viene seleccionada por defecto en Personal.
+  al menos 10. Los espacios al inicio y al final no cuentan. La categoría viene
+  seleccionada por defecto en Personal.
 - **Errores:** se muestran debajo del campo al salir de él o al intentar
   guardar, y el borde se pone rojo. Mientras haya errores visibles, el botón
   "Guardar tarea" queda deshabilitado.
@@ -81,12 +82,34 @@ El estado vive en el hook `useTaskForm` (`src/hooks/useTaskForm.ts`).
 - **Teclado:** `ScreenLayout` usa `KeyboardAvoidingView` para que el teclado no
   tape los campos, y la tecla "siguiente" del título pasa el foco a la descripción.
 
+La tarea que se imprime en consola tiene esta forma:
+
+```ts
+{
+  title: 'Preparar la presentación',
+  description: 'Armar las diapositivas del sprint',
+  category: 'work',
+  createdAt: new Date(),
+}
+```
+
+### Cómo probarlo
+
+1. Abrir la tab **Nueva tarea** y tocar "Guardar tarea" sin completar nada: aparecen
+   los errores debajo de cada campo y el botón se deshabilita.
+2. Escribir un título de menos de 5 caracteres y pasar a la descripción: el error
+   del título se actualiza al salir del campo.
+3. Completar los datos correctamente: el botón se habilita, al guardar aparece el
+   aviso "Éxito" y la tarea se muestra en la terminal donde corre `npx expo start`.
+4. Cerrar el aviso: el formulario vuelve a su estado inicial.
+
 ## Componentes compartidos
 
 `ScreenLayout` y `ScreenHeader` (en `src/components/`) concentran la estructura
 común de pantalla: `SafeAreaView`, encabezado con título/subtítulo y el
-`ScrollView` de contenido. Los tokens de diseño (colores, espaciados,
-tamaños de fuente, radios) viven en `src/constants/`.
+`ScrollView` de contenido, envuelto en un `KeyboardAvoidingView` para que los
+formularios no queden tapados por el teclado. Los tokens de diseño (colores,
+espaciados, tamaños de fuente, radios) viven en `src/constants/`.
 
 ## Componente `FormField`
 
