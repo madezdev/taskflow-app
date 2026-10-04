@@ -14,6 +14,7 @@ export function useTaskForm() {
   const [category, setCategory] = useState<TaskCategory>(DEFAULT_TASK_CATEGORY);
   const [touched, setTouched] = useState(INITIAL_TOUCHED);
   const [submitAttempted, setSubmitAttempted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const allErrors = validateTaskForm({ title, description, category });
 
@@ -34,12 +35,16 @@ export function useTaskForm() {
   }
 
   function submit(): Task | null {
+    // Evita registrar la misma tarea dos veces si el usuario toca "Guardar" repetidamente.
+    if (isSubmitting) return null;
+
     setSubmitAttempted(true);
 
     if (Object.keys(allErrors).length > 0) {
       return null;
     }
 
+    setIsSubmitting(true);
     return {
       title: title.trim(),
       description: description.trim(),
@@ -54,6 +59,7 @@ export function useTaskForm() {
     setCategory(DEFAULT_TASK_CATEGORY);
     setTouched(INITIAL_TOUCHED);
     setSubmitAttempted(false);
+    setIsSubmitting(false);
   }
 
   return {
@@ -65,6 +71,7 @@ export function useTaskForm() {
     setCategory,
     errors,
     hasVisibleErrors,
+    isSubmitting,
     markTouched,
     submit,
     reset,

@@ -76,7 +76,8 @@ El estado vive en el hook `useTaskForm` (`src/hooks/useTaskForm.ts`).
   "Guardar tarea" queda deshabilitado.
 - **Envío simulado:** si los datos son válidos se muestra la tarea con
   `console.log`, se abre un `Alert` de confirmación y, al cerrarlo, se limpia
-  el formulario.
+  el formulario. Mientras el aviso está abierto el botón queda deshabilitado
+  para evitar guardar la misma tarea dos veces.
 - **Teclado:** `ScreenLayout` usa `KeyboardAvoidingView` para que el teclado no
   tape los campos, y la tecla "siguiente" del título pasa el foco a la descripción.
 

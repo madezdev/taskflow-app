@@ -17,10 +17,13 @@ export default function AddTaskScreen() {
     setCategory,
     errors,
     hasVisibleErrors,
+    isSubmitting,
     markTouched,
     submit,
     reset,
   } = useTaskForm();
+
+  const isSaveDisabled = hasVisibleErrors || isSubmitting;
 
   function handleAddTask() {
     const task = submit();
@@ -67,12 +70,12 @@ export default function AddTaskScreen() {
       />
       <CategorySelector value={category} onChange={setCategory} />
       <TouchableOpacity
-        style={[styles.button, hasVisibleErrors && styles.buttonDisabled]}
+        style={[styles.button, isSaveDisabled && styles.buttonDisabled]}
         onPress={handleAddTask}
-        disabled={hasVisibleErrors}
+        disabled={isSaveDisabled}
         activeOpacity={0.8}
         accessibilityRole="button"
-        accessibilityState={{ disabled: hasVisibleErrors }}
+        accessibilityState={{ disabled: isSaveDisabled }}
       >
         <Text style={styles.buttonText}>Guardar tarea</Text>
       </TouchableOpacity>
