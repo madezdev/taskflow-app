@@ -1,0 +1,72 @@
+import { useState } from 'react';
+import { DEFAULT_TASK_CATEGORY } from '../constants/taskCategories';
+import type { Task, TaskCategory, TaskFormErrors, TaskFormField } from '../types/task';
+import { validateTaskForm } from '../utils/taskValidation';
+
+const INITIAL_TOUCHED: Record<TaskFormField, boolean> = {
+  title: false,
+  description: false,
+};
+
+export function useTaskForm() {
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [category, setCategory] = useState<TaskCategory>(DEFAULT_TASK_CATEGORY);
+  const [touched, setTouched] = useState(INITIAL_TOUCHED);
+  const [submitAttempted, setSubmitAttempted] = useState(false);
+
+  const allErrors = validateTaskForm({ title, description, category });
+
+  // Para no mostrar errores antes de tiempo, un campo solo muestra su error
+  // si el usuario ya salió de él o si intentó guardar.
+  const errors: TaskFormErrors = {};
+  if (allErrors.title && (touched.title || submitAttempted)) {
+    errors.title = allErrors.title;
+  }
+  if (allErrors.description && (touched.description || submitAttempted)) {
+    errors.description = allErrors.description;
+  }
+
+  const hasVisibleErrors = Object.keys(errors).length > 0;
+
+  function markTouched(field: TaskFormField) {
+    setTouched((current) => ({ ...current, [field]: true }));
+  }
+
+  function submit(): Task | null {
+    setSubmitAttempted(true);
+
+    if (Object.keys(allErrors).length > 0) {
+      return null;
+    }
+
+    return {
+      title: title.trim(),
+      description: description.trim(),
+      category,
+      createdAt: new Date(),
+    };
+  }
+
+  function reset() {
+    setTitle('');
+    setDescription('');
+    setCategory(DEFAULT_TASK_CATEGORY);
+    setTouched(INITIAL_TOUCHED);
+    setSubmitAttempted(false);
+  }
+
+  return {
+    title,
+    setTitle,
+    description,
+    setDescription,
+    category,
+    setCategory,
+    errors,
+    hasVisibleErrors,
+    markTouched,
+    submit,
+    reset,
+  };
+}

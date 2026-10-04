@@ -6,6 +6,7 @@ Aplicación mobile de gestión de tareas desarrollada con React Native, Expo (Ma
 
 - **Checkpoint 1 – Estructura base:** inicialización del proyecto con Expo, TypeScript y herramientas de calidad de código.
 - **Checkpoint 2 – Componentes y estilos:** arquitectura de carpetas en `src/`, pantallas `HomeScreen` y `ProfileScreen`, componente reutilizable `ProfileCard` y constantes de diseño centralizadas.
+- **Checkpoint 3 – Formulario de tareas:** pantalla `AddTaskScreen` para crear tareas, con inputs controlados, validaciones, manejo del teclado y envío simulado.
 
 ## Estructura del proyecto
 
@@ -21,35 +22,63 @@ taskflow-app/
     │   ├── fonts/
     │   └── images/
     ├── components/       # Componentes reutilizables de UI
+    │   ├── CategorySelector.tsx
+    │   ├── FormField.tsx
     │   ├── ProfileCard.tsx
     │   ├── ScreenHeader.tsx
     │   ├── ScreenLayout.tsx
     │   └── StatusBadge.tsx
     ├── constants/        # Constantes de diseño
     │   ├── colors.ts     # Paleta de colores
+    │   ├── taskCategories.ts # Categorías de tarea y categoría por defecto
     │   └── theme.ts      # Espaciados, tamaños de fuente y radios
+    ├── hooks/            # Hooks personalizados
+    │   └── useTaskForm.ts # Estado, errores y envío del formulario de tareas
     ├── navigation/       # Configuración de navegación
     │   └── AppNavigator.tsx
     ├── screens/          # Pantallas principales
+    │   ├── AddTaskScreen.tsx
     │   ├── HomeScreen.tsx
     │   └── ProfileScreen.tsx
     ├── services/         # Fuente de datos de usuario (hoy en memoria, a futuro un backend)
     │   └── userService.ts
-    └── types/            # Tipos compartidos del dominio
-        └── user.ts
+    ├── types/            # Tipos compartidos del dominio
+    │   ├── task.ts
+    │   └── user.ts
+    └── utils/            # Funciones puras
+        └── taskValidation.ts # Validación del formulario de tareas
 ```
 
 ## Navegación
 
 La app usa un navegador de tabs inferior (`@react-navigation/bottom-tabs`)
 definido en `src/navigation/AppNavigator.tsx`, montado desde `App.tsx` dentro
-de `NavigationContainer`. Tiene dos tabs:
+de `NavigationContainer`. Tiene tres tabs:
 
 - **Tareas** (`HomeScreen`)
+- **Nueva tarea** (`AddTaskScreen`)
 - **Perfil** (`ProfileScreen`)
 
 Cada pantalla dibuja su propio encabezado con `ScreenLayout`, así que el
 encabezado nativo del navegador está deshabilitado (`headerShown: false`).
+
+## Formulario de nueva tarea
+
+`AddTaskScreen` permite cargar una tarea con título, descripción y categoría.
+El estado vive en el hook `useTaskForm` (`src/hooks/useTaskForm.ts`).
+
+- **Inputs controlados:** cada campo recibe `value` y `onChangeText`.
+- **Validaciones** (`src/utils/taskValidation.ts`): el título es obligatorio y
+  debe tener al menos 5 caracteres; la descripción es obligatoria y debe tener
+  al menos 10. La categoría viene seleccionada por defecto en Personal.
+- **Errores:** se muestran debajo del campo al salir de él o al intentar
+  guardar, y el borde se pone rojo. Mientras haya errores visibles, el botón
+  "Guardar tarea" queda deshabilitado.
+- **Envío simulado:** si los datos son válidos se muestra la tarea con
+  `console.log`, se abre un `Alert` de confirmación y, al cerrarlo, se limpia
+  el formulario.
+- **Teclado:** `ScreenLayout` usa `KeyboardAvoidingView` para que el teclado no
+  tape los campos, y la tecla "siguiente" del título pasa el foco a la descripción.
 
 ## Componentes compartidos
 
@@ -57,6 +86,28 @@ encabezado nativo del navegador está deshabilitado (`headerShown: false`).
 común de pantalla: `SafeAreaView`, encabezado con título/subtítulo y el
 `ScrollView` de contenido. Los tokens de diseño (colores, espaciados,
 tamaños de fuente, radios) viven en `src/constants/`.
+
+## Componente `FormField`
+
+Campo de formulario reutilizable: etiqueta, `TextInput` y mensaje de error.
+Acepta además todas las props de `TextInput`.
+
+| Prop    | Tipo                | Descripción                                         |
+| ------- | ------------------- | --------------------------------------------------- |
+| `label` | `string`            | Texto de la etiqueta                                |
+| `error` | `string` (opcional) | Mensaje de error; si existe, el borde se pone rojo  |
+| `ref`   | `Ref<TextInput>`    | Referencia al input, por ejemplo para mover el foco |
+
+El borde cambia a color primario cuando el campo tiene el foco.
+
+## Componente `CategorySelector`
+
+Selector de categoría con opciones en formato de chips, tomadas de `src/constants/taskCategories.ts`.
+
+| Prop       | Tipo                               | Descripción                       |
+| ---------- | ---------------------------------- | --------------------------------- |
+| `value`    | `TaskCategory`                     | Categoría seleccionada            |
+| `onChange` | `(category: TaskCategory) => void` | Se llama al elegir otra categoría |
 
 ## Componente `ProfileCard`
 
@@ -122,6 +173,8 @@ Luego escanear el código QR con Expo Go, o presionar `a` (Android) / `i` (iOS) 
 
 ## Próximos pasos
 
-- Formularios para cargar tareas
-- Estado global
+- Volver a la lista de tareas al guardar
+- Estado global con Redux
+- Persistencia de las tareas en Firebase
+- Adjuntar imágenes a las tareas
 - Datos del usuario desde Firebase / Firestore
