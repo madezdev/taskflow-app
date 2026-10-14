@@ -1,4 +1,6 @@
-export { colors } from './colors';
+import { colors } from './colors';
+
+export { colors };
 export type { ColorName } from './colors';
 
 export const spacing = {
@@ -21,4 +23,14 @@ export const radius = {
   sm: 8,
   md: 16,
   full: 999,
+} as const;
+
+export const shadows = {
+  card: {
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 3,
+  },
 } as const;

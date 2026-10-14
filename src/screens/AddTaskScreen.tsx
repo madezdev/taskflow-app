@@ -1,10 +1,11 @@
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { useRef } from 'react';
-import { Alert, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
+import { Alert, Keyboard, StyleSheet, TextInput, View } from 'react-native';
+import ActionButton from '../components/ActionButton';
 import CategorySelector from '../components/CategorySelector';
 import FormField from '../components/FormField';
 import ScreenLayout from '../components/ScreenLayout';
-import { colors, fontSizes, radius, spacing } from '../constants/theme';
+import { spacing } from '../constants/theme';
 import { useTasks } from '../context/TasksContext';
 import { useTaskForm } from '../hooks/useTaskForm';
 import type { RootTabParamList } from '../navigation/AppNavigator';
@@ -82,34 +83,15 @@ export default function AddTaskScreen({ navigation }: AddTaskScreenProps) {
         onBlur={() => markTouched('description')}
       />
       <CategorySelector value={category} onChange={setCategory} />
-      <TouchableOpacity
-        style={[styles.button, isSaveDisabled && styles.buttonDisabled]}
-        onPress={handleAddTask}
-        disabled={isSaveDisabled}
-        activeOpacity={0.8}
-        accessibilityRole="button"
-        accessibilityState={{ disabled: isSaveDisabled }}
-      >
-        <Text style={styles.buttonText}>Guardar tarea</Text>
-      </TouchableOpacity>
+      <View style={styles.action}>
+        <ActionButton label="Guardar tarea" onPress={handleAddTask} disabled={isSaveDisabled} />
+      </View>
     </ScreenLayout>
   );
 }
 
 const styles = StyleSheet.create({
-  button: {
-    alignItems: 'center',
-    backgroundColor: colors.primary,
-    borderRadius: radius.sm,
-    paddingVertical: spacing.md,
+  action: {
     marginTop: spacing.lg,
-  },
-  buttonDisabled: {
-    opacity: 0.5,
-  },
-  buttonText: {
-    color: colors.textInverse,
-    fontSize: fontSizes.sm,
-    fontWeight: '700',
   },
 });

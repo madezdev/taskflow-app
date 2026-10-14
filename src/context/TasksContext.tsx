@@ -5,6 +5,7 @@ import type { Task, TaskFormValues } from '../types/task';
 type TasksContextValue = {
   tasks: readonly Task[];
   addTask: (values: TaskFormValues) => void;
+  toggleTaskCompleted: (id: string) => void;
 };
 
 type TasksProviderProps = {
@@ -13,7 +14,7 @@ type TasksProviderProps = {
 
 const TasksContext = createContext<TasksContextValue | null>(null);
 
-// Id local temporal: cuando exista el backend (Firebase) serán asignados por él.
+// Id local temporal: cuando exista el backend (Firebase), será el encargado de asignarlo.
 function createTaskId() {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }
@@ -32,7 +33,16 @@ export function TasksProvider({ children }: TasksProviderProps) {
     setTasks((current) => [task, ...current]);
   }, []);
 
-  const value = useMemo(() => ({ tasks, addTask }), [tasks, addTask]);
+  const toggleTaskCompleted = useCallback((id: string) => {
+    setTasks((current) =>
+      current.map((task) => (task.id === id ? { ...task, completed: !task.completed } : task)),
+    );
+  }, []);
+
+  const value = useMemo(
+    () => ({ tasks, addTask, toggleTaskCompleted }),
+    [tasks, addTask, toggleTaskCompleted],
+  );
 
   return <TasksContext value={value}>{children}</TasksContext>;
 }

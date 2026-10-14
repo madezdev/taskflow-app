@@ -22,16 +22,19 @@ taskflow-app/
     │   ├── fonts/
     │   └── images/
     ├── components/           # Componentes reutilizables de UI
+    │   ├── ActionButton.tsx
     │   ├── CategorySelector.tsx
+    │   ├── EmptyState.tsx
     │   ├── FormField.tsx
     │   ├── ProfileCard.tsx
     │   ├── ScreenHeader.tsx
     │   ├── ScreenLayout.tsx
-    │   └── StatusBadge.tsx
+    │   ├── StatusBadge.tsx
+    │   └── TaskListItem.tsx
     ├── constants/            # Constantes de diseño y de dominio
     │   ├── colors.ts         # Paleta de colores
-    │   ├── taskCategories.ts # Categorías de tarea y categoría por defecto
-    │   └── theme.ts          # Espaciados, tamaños de fuente y radios
+    │   ├── taskCategories.ts # Etiquetas de categoría y categoría por defecto
+    │   └── theme.ts          # Espaciados, tamaños de fuente, radios y sombras
     ├── context/              # Estado compartido entre pantallas
     │   └── TasksContext.tsx  # Lista de tareas en memoria y hook useTasks
     ├── hooks/                # Hooks personalizados
@@ -48,6 +51,7 @@ taskflow-app/
     │   ├── task.ts
     │   └── user.ts
     └── utils/                # Funciones puras
+        ├── formatDate.ts     # Formato de fechas en español
         └── taskValidation.ts # Validación del formulario de tareas
 ```
 
@@ -116,7 +120,48 @@ Cada tarea guardada tiene esta forma:
 común de pantalla: `SafeAreaView`, encabezado con título/subtítulo y el
 `ScrollView` de contenido, envuelto en un `KeyboardAvoidingView` para que los
 formularios no queden tapados por el teclado. Los tokens de diseño (colores,
-espaciados, tamaños de fuente, radios) viven en `src/constants/`.
+espaciados, tamaños de fuente, radios y sombras) viven en `src/constants/`.
+
+`ScreenLayout` acepta además la prop opcional `scrollable` (por defecto `true`).
+Con `scrollable={false}` el contenido se renderiza sin `ScrollView` y sin padding,
+para que una `FlatList` maneje su propio scroll sin anidar listas virtualizadas.
+
+## Componente `ActionButton`
+
+Botón de acción reutilizable con tres variantes.
+
+| Prop                | Tipo                                   | Descripción                                |
+| ------------------- | -------------------------------------- | ------------------------------------------ |
+| `label`             | `string`                               | Texto del botón                            |
+| `onPress`           | `() => void`                           | Se llama al tocar el botón                 |
+| `variant`           | `'primary' \| 'secondary' \| 'danger'` | Estilo del botón (por defecto `primary`)   |
+| `icon`              | nombre de `Ionicons` (opcional)        | Ícono a la izquierda del texto             |
+| `disabled`          | `boolean` (opcional)                   | Deshabilita el botón y lo muestra atenuado |
+| `accessibilityHint` | `string` (opcional)                    | Pista para lectores de pantalla            |
+
+## Componente `EmptyState`
+
+Mensaje para cuando no hay contenido que mostrar, con un llamado a la acción opcional.
+
+| Prop      | Tipo                                     | Descripción                             |
+| --------- | ---------------------------------------- | --------------------------------------- |
+| `title`   | `string`                                 | Título del estado vacío                 |
+| `message` | `string`                                 | Texto de apoyo                          |
+| `icon`    | nombre de `Ionicons` (opcional)          | Ícono dentro del círculo superior       |
+| `action`  | `{ label: string; onPress: () => void }` | Si se indica, muestra un botón primario |
+
+`HomeScreen` lo muestra cuando no hay tareas, con un botón que lleva a **Nueva tarea**.
+
+## Componente `TaskListItem`
+
+Fila de la lista de tareas: casilla para marcarla como completada, título
+(tachado si está completada) y una línea con la categoría y la fecha. Está
+memoizado con `memo` para que la `FlatList` no vuelva a renderizar filas sin cambios.
+
+| Prop                | Tipo                   | Descripción                              |
+| ------------------- | ---------------------- | ---------------------------------------- |
+| `task`              | `Task`                 | Tarea a mostrar                          |
+| `onToggleCompleted` | `(id: string) => void` | Se llama con el `id` al tocar la casilla |
 
 ## Componente `FormField`
 
@@ -156,7 +201,7 @@ props, derivadas del tipo compartido `User` (`src/types/user.ts`).
 ```
 
 - `ProfileScreen` la usa con los datos del usuario actual.
-- `HomeScreen` la reutiliza con distintos datos para listar al equipo.
+- `ProfileScreen` la reutiliza con distintos datos para listar al equipo.
 
 Los estilos se definen con `StyleSheet.create` y toman colores y espaciados de `src/constants/`.
 

@@ -1,44 +1,62 @@
-import { StyleSheet, Text, View } from 'react-native';
-import ProfileCard from '../components/ProfileCard';
+import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import { useCallback } from 'react';
+import { FlatList, StyleSheet, View } from 'react-native';
+import type { ListRenderItem } from 'react-native';
+import EmptyState from '../components/EmptyState';
 import ScreenLayout from '../components/ScreenLayout';
-import { colors, fontSizes, radius, spacing } from '../constants/theme';
-import { getTeam } from '../services/userService';
+import TaskListItem from '../components/TaskListItem';
+import { spacing } from '../constants/theme';
+import { useTasks } from '../context/TasksContext';
+import type { RootTabParamList } from '../navigation/AppNavigator';
+import type { Task } from '../types/task';
 
-export default function HomeScreen() {
-  const team = getTeam();
+type HomeScreenProps = BottomTabScreenProps<RootTabParamList, 'Home'>;
+
+const keyExtractor = (task: Task) => task.id;
+
+function ListSeparator() {
+  return <View style={styles.separator} />;
+}
+
+export default function HomeScreen({ navigation }: HomeScreenProps) {
+  const { tasks, toggleTaskCompleted } = useTasks();
+
+  const renderItem: ListRenderItem<Task> = useCallback(
+    ({ item }) => <TaskListItem task={item} onToggleCompleted={toggleTaskCompleted} />,
+    [toggleTaskCompleted],
+  );
 
   return (
-    <ScreenLayout title="TaskFlow" subtitle="Mis tareas">
-      <View style={styles.emptyState}>
-        <Text style={styles.emptyText}>Todavía no hay tareas cargadas.</Text>
-      </View>
-
-      <Text style={styles.sectionTitle}>Equipo</Text>
-      {team.map((member) => (
-        <ProfileCard key={member.id} name={member.name} role={member.role} image={member.image} />
-      ))}
+    <ScreenLayout title="TaskFlow" subtitle="Mis tareas" scrollable={false}>
+      {tasks.length > 0 ? (
+        <FlatList
+          data={tasks}
+          keyExtractor={keyExtractor}
+          renderItem={renderItem}
+          ItemSeparatorComponent={ListSeparator}
+          contentContainerStyle={styles.listContent}
+        />
+      ) : (
+        <View style={styles.emptyContainer}>
+          <EmptyState
+            title="¡No tienes tareas pendientes!"
+            message="Empieza por crear una desde la pestaña «Nueva tarea»."
+            action={{ label: 'Crear tarea', onPress: () => navigation.navigate('AddTask') }}
+          />
+        </View>
+      )}
     </ScreenLayout>
   );
 }
 
 const styles = StyleSheet.create({
-  emptyState: {
-    alignItems: 'center',
+  listContent: {
     padding: spacing.lg,
-    marginBottom: spacing.lg,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    borderStyle: 'dashed',
-    borderColor: colors.border,
   },
-  emptyText: {
-    color: colors.textMuted,
-    fontSize: fontSizes.sm,
+  separator: {
+    height: spacing.sm,
   },
-  sectionTitle: {
-    color: colors.text,
-    fontSize: fontSizes.md,
-    fontWeight: '700',
-    marginBottom: spacing.md,
+  emptyContainer: {
+    padding: spacing.lg,
   },
 });
