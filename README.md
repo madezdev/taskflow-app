@@ -7,6 +7,7 @@ Aplicación mobile de gestión de tareas desarrollada con React Native, Expo (Ma
 - **Checkpoint 1 – Estructura base:** inicialización del proyecto con Expo, TypeScript y herramientas de calidad de código.
 - **Checkpoint 2 – Componentes y estilos:** arquitectura de carpetas en `src/`, pantallas `HomeScreen` y `ProfileScreen`, componente reutilizable `ProfileCard` y constantes de diseño centralizadas.
 - **Checkpoint 3 – Formulario de tareas:** pantalla `AddTaskScreen` para crear tareas, con inputs controlados, validaciones, manejo del teclado y envío simulado.
+- **Checkpoint 4 – Lista de tareas con detalle:** lista con `FlatList` y estado vacío, estado compartido de tareas con `TasksContext`, pantalla `TaskDetailScreen` y regreso a la lista.
 
 ## Estructura del proyecto
 
@@ -44,7 +45,8 @@ taskflow-app/
     ├── screens/              # Pantallas principales
     │   ├── AddTaskScreen.tsx
     │   ├── HomeScreen.tsx
-    │   └── ProfileScreen.tsx
+    │   ├── ProfileScreen.tsx
+    │   └── TaskDetailScreen.tsx
     ├── services/             # Fuente de datos de usuario (hoy en memoria, a futuro un backend)
     │   └── userService.ts
     ├── types/                # Tipos compartidos del dominio
@@ -114,6 +116,39 @@ Cada tarea guardada tiene esta forma:
 4. Tocar "Crear otra": el formulario vuelve a su estado inicial. Con "Ver tareas"
    también se limpia y se pasa a la tab **Tareas**.
 
+## Lista y detalle de tareas
+
+Las tareas viven en memoria en `TasksProvider` (`src/context/TasksContext.tsx`),
+montado en `App.tsx`, y las pantallas las consumen con el hook `useTasks()`
+(`tasks`, `addTask`, `toggleTaskCompleted` y `removeTask`).
+
+- **Lista:** `HomeScreen` elige con un ternario sobre `tasks.length`: si hay
+  tareas muestra una `FlatList` (la más nueva primero) y, si no, `EmptyState`
+  con un botón que lleva a **Nueva tarea**.
+- **Completar:** la casilla de cada fila alterna `completed` sin abrir el detalle.
+- **Detalle:** al tocar una tarea, `HomeScreen` guarda su `selectedTaskId` y
+  renderiza `TaskDetailScreen` en lugar de la lista. Se guarda el id y no una
+  copia de la tarea para que el detalle siempre muestre los datos actuales.
+  Esto simula la navegación hasta que exista un stack navigator.
+- **Volver:** con el botón "Volver" del encabezado, con el botón atrás de
+  Android, o al salir de la tab **Tareas** o tocarla de nuevo.
+- **Eliminar:** pide confirmación con un `Alert`. Al borrar la última tarea
+  reaparece el estado vacío.
+
+### Cómo probarlo
+
+1. Abrir la app por primera vez: la tab **Tareas** muestra el estado vacío.
+2. Tocar "Crear tarea": se abre la tab **Nueva tarea**.
+3. Completar el formulario y guardar. En el aviso elegir "Ver tareas": la tarea
+   aparece en la lista.
+4. Tocar la casilla de la fila: la tarea se marca como completada y su título se tacha.
+5. Tocar la tarea para abrir el detalle: se ven el estado, la categoría, la
+   fecha y la descripción.
+6. Usar "Marcar como pendiente" y comprobar que el estado cambia.
+7. Tocar "Volver" (o el botón atrás de Android): se regresa a la lista.
+8. Abrir la tarea otra vez y tocar "Eliminar tarea", luego confirmar: se vuelve
+   a la lista y aparece el estado vacío.
+
 ## Componentes compartidos
 
 `ScreenLayout` y `ScreenHeader` (en `src/components/`) concentran la estructura
@@ -123,6 +158,7 @@ formularios no queden tapados por el teclado. Los tokens de diseño (colores,
 espaciados, tamaños de fuente, radios y sombras) viven en `src/constants/`.
 
 `ScreenLayout` acepta además la prop opcional `scrollable` (por defecto `true`).
+Con `onBack` muestra un botón "Volver" sobre el título (lo dibuja `ScreenHeader`).
 Con `scrollable={false}` el contenido se renderiza sin `ScrollView` y sin padding,
 para que una `FlatList` maneje su propio scroll sin anidar listas virtualizadas.
 
@@ -161,7 +197,20 @@ memoizado con `memo` para que la `FlatList` no vuelva a renderizar filas sin cam
 | Prop                | Tipo                   | Descripción                              |
 | ------------------- | ---------------------- | ---------------------------------------- |
 | `task`              | `Task`                 | Tarea a mostrar                          |
+| `onPress`           | `(id: string) => void` | Se llama con el `id` al tocar la fila    |
 | `onToggleCompleted` | `(id: string) => void` | Se llama con el `id` al tocar la casilla |
+
+## Pantalla `TaskDetailScreen`
+
+Detalle de una tarea con su estado, categoría, fecha y descripción, y acciones
+para cambiar su estado o eliminarla. Es presentacional: `HomeScreen` le pasa los datos y los callbacks.
+
+| Prop                | Tipo                   | Descripción                                           |
+| ------------------- | ---------------------- | ----------------------------------------------------- |
+| `task`              | `Task`                 | Tarea a mostrar                                       |
+| `onBack`            | `() => void`           | Vuelve a la lista (botón "Volver" y atrás de Android) |
+| `onToggleCompleted` | `(id: string) => void` | Alterna el estado de la tarea                         |
+| `onDelete`          | `(id: string) => void` | Se llama tras confirmar la eliminación                |
 
 ## Componente `FormField`
 
@@ -249,7 +298,9 @@ Luego escanear el código QR con Expo Go, o presionar `a` (Android) / `i` (iOS) 
 
 ## Próximos pasos
 
-- Estado global con Redux
-- Persistencia de las tareas en Firebase
+- Reemplazar `selectedTaskId` por un `Stack.Navigator` (Módulo 5)
+- Estado global con Redux (Módulo 6)
+- Persistencia de las tareas en Firebase (Módulo 7)
+- Editar una tarea desde su detalle
 - Adjuntar imágenes a las tareas
 - Datos del usuario desde Firebase / Firestore

@@ -6,6 +6,7 @@ type TasksContextValue = {
   tasks: readonly Task[];
   addTask: (values: TaskFormValues) => void;
   toggleTaskCompleted: (id: string) => void;
+  removeTask: (id: string) => void;
 };
 
 type TasksProviderProps = {
@@ -39,9 +40,13 @@ export function TasksProvider({ children }: TasksProviderProps) {
     );
   }, []);
 
+  const removeTask = useCallback((id: string) => {
+    setTasks((current) => current.filter((task) => task.id !== id));
+  }, []);
+
   const value = useMemo(
-    () => ({ tasks, addTask, toggleTaskCompleted }),
-    [tasks, addTask, toggleTaskCompleted],
+    () => ({ tasks, addTask, toggleTaskCompleted, removeTask }),
+    [tasks, addTask, toggleTaskCompleted, removeTask],
   );
 
   return <TasksContext value={value}>{children}</TasksContext>;

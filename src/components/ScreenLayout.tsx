@@ -8,6 +8,7 @@ type ScreenLayoutProps = {
   title: string;
   subtitle?: string;
   headerAccessory?: ReactNode;
+  onBack?: () => void;
   // Con false el contenido maneja su propio scroll (p. ej. una FlatList): anidarla en un
   // ScrollView vertical genera el aviso de VirtualizedLists anidadas.
   scrollable?: boolean;
@@ -18,12 +19,13 @@ export default function ScreenLayout({
   title,
   subtitle,
   headerAccessory,
+  onBack,
   scrollable = true,
   children,
 }: ScreenLayoutProps) {
   return (
     <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
-      <ScreenHeader title={title} subtitle={subtitle}>
+      <ScreenHeader title={title} subtitle={subtitle} onBack={onBack}>
         {headerAccessory}
       </ScreenHeader>
       <KeyboardAvoidingView
