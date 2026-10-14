@@ -44,7 +44,7 @@ export default function TaskDetailScreen({
   }
 
   return (
-    <ScreenLayout title="Detalle de tarea" subtitle="Revisa y gestiona tu tarea" onBack={onBack}>
+    <ScreenLayout title="Detalle" subtitle="Revisa y gestiona tu tarea" onBack={onBack}>
       <View style={styles.card}>
         <View style={styles.statusPill}>
           <View

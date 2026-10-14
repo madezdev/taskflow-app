@@ -138,7 +138,7 @@ montado en `App.tsx`, y las pantallas las consumen con el hook `useTasks()`
   tab o eliminar). Al salir de la tab se reinicia al instante. Usa `Animated`
   con el driver nativo (`useSlideTransition`) y se desactiva si el sistema tiene
   activado "Reducir movimiento".
-- **Volver:** con el botón "Volver" del encabezado, con el botón atrás de
+- **Volver:** con la flecha de volver del encabezado, con el botón atrás de
   Android, o al salir de la tab **Tareas** o tocarla de nuevo.
 - **Eliminar:** pide confirmación con un `Alert`. Al borrar la última tarea
   reaparece el estado vacío.
@@ -153,7 +153,7 @@ montado en `App.tsx`, y las pantallas las consumen con el hook `useTasks()`
 5. Tocar la tarea para abrir el detalle: se ven el estado, la categoría, la
    fecha y la descripción.
 6. Usar "Marcar como pendiente" y comprobar que el estado cambia.
-7. Tocar "Volver" (o el botón atrás de Android): se regresa a la lista.
+7. Tocar la flecha de volver del encabezado (o el botón atrás de Android): se regresa a la lista.
 8. Abrir la tarea otra vez y tocar "Eliminar tarea", luego confirmar: se vuelve
    a la lista y aparece el estado vacío.
 
@@ -166,7 +166,7 @@ formularios no queden tapados por el teclado. Los tokens de diseño (colores,
 espaciados, tamaños de fuente, radios y sombras, incluida `shadows.screen` para la pantalla que se desliza) viven en `src/constants/`.
 
 `ScreenLayout` acepta además la prop opcional `scrollable` (por defecto `true`).
-Con `onBack` muestra un botón "Volver" sobre el título (lo dibuja `ScreenHeader`).
+Con `onBack` muestra una flecha de volver a la izquierda del título (la dibuja `ScreenHeader`). El título y el subtítulo ocupan una sola línea, así todas las pantallas tienen la misma altura de encabezado.
 Con `scrollable={false}` el contenido se renderiza sin `ScrollView` y sin padding,
 para que una `FlatList` maneje su propio scroll sin anidar listas virtualizadas.
 
@@ -213,12 +213,12 @@ memoizado con `memo` para que la `FlatList` no vuelva a renderizar filas sin cam
 Detalle de una tarea con su estado, categoría, fecha y descripción, y acciones
 para cambiar su estado o eliminarla. Es presentacional: `HomeScreen` le pasa los datos y los callbacks.
 
-| Prop                | Tipo                   | Descripción                                           |
-| ------------------- | ---------------------- | ----------------------------------------------------- |
-| `task`              | `Task`                 | Tarea a mostrar                                       |
-| `onBack`            | `() => void`           | Vuelve a la lista (botón "Volver" y atrás de Android) |
-| `onToggleCompleted` | `(id: string) => void` | Alterna el estado de la tarea                         |
-| `onDelete`          | `(id: string) => void` | Se llama tras confirmar la eliminación                |
+| Prop                | Tipo                   | Descripción                                                  |
+| ------------------- | ---------------------- | ------------------------------------------------------------ |
+| `task`              | `Task`                 | Tarea a mostrar                                              |
+| `onBack`            | `() => void`           | Vuelve a la lista (flecha del encabezado y atrás de Android) |
+| `onToggleCompleted` | `(id: string) => void` | Alterna el estado de la tarea                                |
+| `onDelete`          | `(id: string) => void` | Se llama tras confirmar la eliminación                       |
 
 ## Componente `FormField`
 

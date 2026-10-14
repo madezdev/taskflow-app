@@ -10,26 +10,35 @@ type ScreenHeaderProps = {
   children?: ReactNode;
 };
 
-const BACK_ICON_SIZE = 20;
+const BACK_ICON_SIZE = 28;
 
 export default function ScreenHeader({ title, subtitle, onBack, children }: ScreenHeaderProps) {
   return (
     <View style={styles.header}>
-      {onBack ? (
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={onBack}
-          hitSlop={spacing.sm}
-          activeOpacity={0.8}
-          accessibilityRole="button"
-          accessibilityLabel="Volver a la lista de tareas"
-        >
-          <Ionicons name="chevron-back" size={BACK_ICON_SIZE} color={colors.textInverse} />
-          <Text style={styles.backText}>Volver</Text>
-        </TouchableOpacity>
+      {/* El botón atrás va en la fila del título y los textos ocupan una sola línea, así todas
+          las pantallas tienen la misma altura de encabezado y no salta durante la transición. */}
+      <View style={styles.titleRow}>
+        {onBack ? (
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={onBack}
+            hitSlop={spacing.sm}
+            activeOpacity={0.8}
+            accessibilityRole="button"
+            accessibilityLabel="Volver a la lista de tareas"
+          >
+            <Ionicons name="chevron-back" size={BACK_ICON_SIZE} color={colors.textInverse} />
+          </TouchableOpacity>
+        ) : null}
+        <Text style={styles.title} numberOfLines={1}>
+          {title}
+        </Text>
+      </View>
+      {subtitle ? (
+        <Text style={styles.subtitle} numberOfLines={1}>
+          {subtitle}
+        </Text>
       ) : null}
-      <Text style={styles.title}>{title}</Text>
-      {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
       {children}
     </View>
   );
@@ -41,18 +50,15 @@ const styles = StyleSheet.create({
     paddingTop: spacing.xl,
     paddingBottom: spacing.lg,
   },
-  backButton: {
+  titleRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    alignSelf: 'flex-start',
-    marginBottom: spacing.sm,
   },
-  backText: {
-    color: colors.textInverse,
-    fontSize: fontSizes.sm,
-    fontWeight: '600',
+  backButton: {
+    marginRight: spacing.sm,
   },
   title: {
+    flexShrink: 1,
     color: colors.textInverse,
     fontSize: fontSizes.xl,
     fontWeight: 'bold',
