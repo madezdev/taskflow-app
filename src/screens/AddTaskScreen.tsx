@@ -1,12 +1,18 @@
+import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { useRef } from 'react';
 import { Alert, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
 import CategorySelector from '../components/CategorySelector';
 import FormField from '../components/FormField';
 import ScreenLayout from '../components/ScreenLayout';
 import { colors, fontSizes, radius, spacing } from '../constants/theme';
+import { useTasks } from '../context/TasksContext';
 import { useTaskForm } from '../hooks/useTaskForm';
+import type { RootTabParamList } from '../navigation/AppNavigator';
 
-export default function AddTaskScreen() {
+type AddTaskScreenProps = BottomTabScreenProps<RootTabParamList, 'AddTask'>;
+
+export default function AddTaskScreen({ navigation }: AddTaskScreenProps) {
+  const { addTask } = useTasks();
   const descriptionRef = useRef<TextInput>(null);
   const {
     title,
@@ -26,16 +32,23 @@ export default function AddTaskScreen() {
   const isSaveDisabled = hasVisibleErrors || isSubmitting;
 
   function handleAddTask() {
-    const task = submit();
-    if (!task) return;
+    const values = submit();
+    if (!values) return;
 
+    addTask(values);
     Keyboard.dismiss();
-    // Simula el envío a la API hasta que existan el estado global y el backend
-    // eslint-disable-next-line no-console
-    console.log('Tarea creada:', task);
     // El reset se hace al cerrar el aviso: el blur que dispara Keyboard.dismiss() llega
     // de forma asíncrona y, si limpiáramos antes, volvería a marcar el campo como tocado.
-    Alert.alert('Éxito', 'Tarea capturada localmente', [{ text: 'OK', onPress: reset }]);
+    Alert.alert('Éxito', 'La tarea se agregó a tu lista.', [
+      { text: 'Crear otra', onPress: reset },
+      {
+        text: 'Ver tareas',
+        onPress: () => {
+          reset();
+          navigation.navigate('Home');
+        },
+      },
+    ]);
   }
 
   return (

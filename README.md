@@ -32,6 +32,8 @@ taskflow-app/
     │   ├── colors.ts         # Paleta de colores
     │   ├── taskCategories.ts # Categorías de tarea y categoría por defecto
     │   └── theme.ts          # Espaciados, tamaños de fuente y radios
+    ├── context/              # Estado compartido entre pantallas
+    │   └── TasksContext.tsx  # Lista de tareas en memoria y hook useTasks
     ├── hooks/                # Hooks personalizados
     │   └── useTaskForm.ts    # Estado, errores y envío del formulario de tareas
     ├── navigation/           # Configuración de navegación
@@ -75,21 +77,25 @@ El estado vive en el hook `useTaskForm` (`src/hooks/useTaskForm.ts`).
 - **Errores:** se muestran debajo del campo al salir de él o al intentar
   guardar, y el borde se pone rojo. Mientras haya errores visibles, el botón
   "Guardar tarea" queda deshabilitado.
-- **Envío simulado:** si los datos son válidos se muestra la tarea con
-  `console.log`, se abre un `Alert` de confirmación y, al cerrarlo, se limpia
-  el formulario. Mientras el aviso está abierto el botón queda deshabilitado
-  para evitar guardar la misma tarea dos veces.
+- **Guardado:** si los datos son válidos, la tarea se agrega a una lista
+  compartida en memoria (`TasksContext`) con su `id`, `createdAt` y
+  `completed: false`, y se abre un `Alert` con dos opciones: "Crear otra"
+  limpia el formulario y "Ver tareas" lo limpia y lleva a la tab **Tareas**.
+  Mientras el aviso está abierto el botón queda deshabilitado para evitar
+  guardar la misma tarea dos veces.
 - **Teclado:** `ScreenLayout` usa `KeyboardAvoidingView` para que el teclado no
   tape los campos, y la tecla "siguiente" del título pasa el foco a la descripción.
 
-La tarea que se imprime en consola tiene esta forma:
+Cada tarea guardada tiene esta forma:
 
 ```ts
 {
+  id: 'lq3k9x2a-4fj7ab',
   title: 'Preparar la presentación',
   description: 'Armar las diapositivas del sprint',
   category: 'work',
   createdAt: new Date(),
+  completed: false,
 }
 ```
 
@@ -100,8 +106,9 @@ La tarea que se imprime en consola tiene esta forma:
 2. Escribir un título de menos de 5 caracteres y pasar a la descripción: el error
    del título se actualiza al salir del campo.
 3. Completar los datos correctamente: el botón se habilita, al guardar aparece el
-   aviso "Éxito" y la tarea se muestra en la terminal donde corre `npx expo start`.
-4. Cerrar el aviso: el formulario vuelve a su estado inicial.
+   aviso "Éxito" con las opciones "Crear otra" y "Ver tareas".
+4. Tocar "Crear otra": el formulario vuelve a su estado inicial. Con "Ver tareas"
+   también se limpia y se pasa a la tab **Tareas**.
 
 ## Componentes compartidos
 
@@ -197,7 +204,6 @@ Luego escanear el código QR con Expo Go, o presionar `a` (Android) / `i` (iOS) 
 
 ## Próximos pasos
 
-- Volver a la lista de tareas al guardar
 - Estado global con Redux
 - Persistencia de las tareas en Firebase
 - Adjuntar imágenes a las tareas

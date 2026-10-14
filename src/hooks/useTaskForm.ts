@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { DEFAULT_TASK_CATEGORY } from '../constants/taskCategories';
-import type { Task, TaskCategory, TaskFormErrors, TaskFormField } from '../types/task';
+import type { TaskCategory, TaskFormErrors, TaskFormField, TaskFormValues } from '../types/task';
 import { validateTaskForm } from '../utils/taskValidation';
 
 const INITIAL_TOUCHED: Record<TaskFormField, boolean> = {
@@ -35,7 +35,7 @@ export function useTaskForm() {
     setTouched((current) => ({ ...current, [field]: true }));
   }
 
-  function submit(): Task | null {
+  function submit(): TaskFormValues | null {
     // Evita registrar la misma tarea dos veces si el usuario toca "Guardar" repetidamente.
     // El ref se lee al instante; el estado solo sirve para deshabilitar el botón en pantalla.
     if (isSubmittingRef.current) return null;
@@ -52,7 +52,6 @@ export function useTaskForm() {
       title: title.trim(),
       description: description.trim(),
       category,
-      createdAt: new Date(),
     };
   }
 
