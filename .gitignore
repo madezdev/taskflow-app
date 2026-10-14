@@ -39,7 +39,3 @@ yarn-error.*
 # generated native folders
 /ios
 /android
-
-# local tooling and working notes
-.atl/
-odd/

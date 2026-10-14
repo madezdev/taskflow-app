@@ -1,5 +1,5 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
-import { colors, fontSizes, radius, spacing } from '../constants/theme';
+import { colors, fontSizes, radius, shadows, spacing } from '../constants/theme';
 import type { User } from '../types/user';
 
 type ProfileCardProps = Pick<User, 'name' | 'role' | 'image'>;
@@ -32,11 +32,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
     borderWidth: 1,
     borderColor: colors.border,
-    shadowColor: colors.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 6,
-    elevation: 3,
+    ...shadows.card,
   },
   avatar: {
     width: AVATAR_SIZE,
