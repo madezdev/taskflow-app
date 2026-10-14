@@ -35,11 +35,12 @@ taskflow-app/
     ├── constants/            # Constantes de diseño y de dominio
     │   ├── colors.ts         # Paleta de colores
     │   ├── taskCategories.ts # Etiquetas de categoría y categoría por defecto
-    │   └── theme.ts          # Espaciados, tamaños de fuente, radios y sombras
+    │   └── theme.ts          # Espaciados, tamaños de fuente, radios y sombras (cards y pantalla deslizante)
     ├── context/              # Estado compartido entre pantallas
     │   └── TasksContext.tsx  # Lista de tareas en memoria y hook useTasks
     ├── hooks/                # Hooks personalizados
-    │   └── useTaskForm.ts    # Estado, errores y envío del formulario de tareas
+    │   ├── useSlideTransition.ts # Animación de entrada y salida del detalle
+    │   └── useTaskForm.ts        # Estado, errores y envío del formulario de tareas
     ├── navigation/           # Configuración de navegación
     │   └── AppNavigator.tsx
     ├── screens/              # Pantallas principales
@@ -127,9 +128,16 @@ montado en `App.tsx`, y las pantallas las consumen con el hook `useTasks()`
   con un botón que lleva a **Nueva tarea**.
 - **Completar:** la casilla de cada fila alterna `completed` sin abrir el detalle.
 - **Detalle:** al tocar una tarea, `HomeScreen` guarda su `selectedTaskId` y
-  renderiza `TaskDetailScreen` en lugar de la lista. Se guarda el id y no una
-  copia de la tarea para que el detalle siempre muestre los datos actuales.
-  Esto simula la navegación hasta que exista un stack navigator.
+  superpone `TaskDetailScreen` sobre la lista, que sigue montada y conserva su
+  posición de scroll. Se guarda el id y no una copia de la tarea para que el
+  detalle siempre muestre los datos actuales. Esto simula la navegación hasta
+  que exista un stack navigator.
+- **Transición:** el detalle entra deslizándose desde la derecha mientras la
+  lista se desplaza un poco hacia la izquierda (parallax), y sale deslizándose
+  por cualquier vía de regreso (encabezado, botón atrás de Android, tocar la
+  tab o eliminar). Al salir de la tab se reinicia al instante. Usa `Animated`
+  con el driver nativo (`useSlideTransition`) y se desactiva si el sistema tiene
+  activado "Reducir movimiento".
 - **Volver:** con el botón "Volver" del encabezado, con el botón atrás de
   Android, o al salir de la tab **Tareas** o tocarla de nuevo.
 - **Eliminar:** pide confirmación con un `Alert`. Al borrar la última tarea
@@ -155,7 +163,7 @@ montado en `App.tsx`, y las pantallas las consumen con el hook `useTasks()`
 común de pantalla: `SafeAreaView`, encabezado con título/subtítulo y el
 `ScrollView` de contenido, envuelto en un `KeyboardAvoidingView` para que los
 formularios no queden tapados por el teclado. Los tokens de diseño (colores,
-espaciados, tamaños de fuente, radios y sombras) viven en `src/constants/`.
+espaciados, tamaños de fuente, radios y sombras, incluida `shadows.screen` para la pantalla que se desliza) viven en `src/constants/`.
 
 `ScreenLayout` acepta además la prop opcional `scrollable` (por defecto `true`).
 Con `onBack` muestra un botón "Volver" sobre el título (lo dibuja `ScreenHeader`).
@@ -298,7 +306,7 @@ Luego escanear el código QR con Expo Go, o presionar `a` (Android) / `i` (iOS) 
 
 ## Próximos pasos
 
-- Reemplazar `selectedTaskId` por un `Stack.Navigator` (Módulo 5)
+- Reemplazar `selectedTaskId` por un `Stack.Navigator` (Módulo 5), que traerá transiciones nativas y el gesto de deslizar para volver
 - Estado global con Redux (Módulo 6)
 - Persistencia de las tareas en Firebase (Módulo 7)
 - Editar una tarea desde su detalle

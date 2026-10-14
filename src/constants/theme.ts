@@ -26,6 +26,13 @@ export const radius = {
 } as const;
 
 export const shadows = {
+  screen: {
+    shadowColor: colors.shadow,
+    shadowOffset: { width: -2, height: 0 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 8,
+  },
   card: {
     shadowColor: colors.shadow,
     shadowOffset: { width: 0, height: 2 },
